@@ -24,4 +24,4 @@
 * MongoDB и Mongoose
 
 ### Ссылка на публичный репозиторий
-[https://github.com/Eka123Eka/express-mesto-gha.git](express-mesto-gha)
+[https://github.com/Eka123Eka/express-mesto-gha.git](https://github.com/Eka123Eka/express-mesto-gha.git)
