@@ -22,7 +22,7 @@ const getUserById = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(400).send({
           message: `Некорректный id: ${userId} для поиска пользователя. Операция не выполнена.`,
         });
@@ -41,10 +41,10 @@ const createUser = (req, res) => {
       res.status(201).send(newUser);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res.status(400).send({
           message: `При создании пользователя переданы некорректные данные.
-            ${Object.values(err.errors).map((err) => err.message).join(", ")}`,
+            ${Object.values(err.errors).map((e) => e.message).join(', ')}`,
         });
       } else {
         res.status(500).send({
@@ -69,10 +69,10 @@ const updateUser = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res.status(400).send({
           message: `При обновлении пользователя переданы некорректные данные.
-            ${Object.values(err.errors).map((err) => err.message).join(", ")}`,
+            ${Object.values(err.errors).map((e) => e.message).join(', ')}`,
         });
       } else {
         res.status(500).send({
@@ -97,10 +97,10 @@ const updateAvatar = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res.status(400).send({
           message: `При обновлении аватара пользователя переданы некорректные данные.
-            ${Object.values(err.errors).map((err) => err.message).join(", ")}`,
+            ${Object.values(err.errors).map((e) => e.message).join(', ')}`,
         });
       } else {
         res.status(500).send({

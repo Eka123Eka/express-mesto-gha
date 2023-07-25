@@ -17,10 +17,10 @@ const createCard = (req, res) => {
       res.status(201).send(newCard);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res.status(400).send({
           message: `При создании карточки переданы некорректные данные.
-            ${Object.values(err.errors).map((err) => err.message).join(", ")}`,
+            ${Object.values(err.errors).map((e) => e.message).join(', ')}`,
         });
       } else {
         res.status(500).send({
@@ -45,14 +45,14 @@ const deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(400).send({
           message: `Некорректный id карточки: ${cardId}`,
         });
       } else {
-          res.status(500).send({
-            message: `При удалении карточки на сервере возникла непредвиденная ошибка ${err.message}`,
-          });
+        res.status(500).send({
+          message: `При удалении карточки на сервере возникла непредвиденная ошибка ${err.message}`,
+        });
       }
     });
 };
@@ -68,14 +68,15 @@ const setLike = (req, res) => {
           message: `Карточка с указанным id: ${cardId} не найдена`,
         });
       } else {
-        Card.findByIdAndUpdate(cardId,
+        Card.findByIdAndUpdate(
+          cardId,
           { $addToSet: { likes: owner } },
-          { new: true },)
-          .then((deletedCard) => res.status(200).send(deletedCard));
+          { new: true },
+        ).then((deletedCard) => res.status(200).send(deletedCard));
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(400).send({
           message: `Переданы некорректные данные для установки лайка: ${cardId}`,
         });
@@ -107,7 +108,7 @@ const unsetLike = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === 'CastError') {
         res.status(400).send({
           message: `Переданы некорректные данные для снятия лайка: ${cardId}`,
         });

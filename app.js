@@ -21,4 +21,3 @@ app.use(routes);
 app.listen(PORT, () => {
   console.log(new Date(), `server is running at ${SERVER_ADR}:${PORT}`);
 });
-
