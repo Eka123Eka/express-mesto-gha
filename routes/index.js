@@ -2,16 +2,16 @@ const router = require('express').Router();
 const userRoute = require('./users');
 const cardRoute = require('./cards');
 
-const ERROR_CODE = {
-  not_found: 404,
-};
+const { createUser, login } = require('../controllers/users');
+const auth = require('../middlewares/auth');
+const { NotFoundError } = require('../errors');
+const { validCreateUser, validLogin } = require('../utils/validationFieldsWithJoi');
 
-router.use('/users', userRoute);
-router.use('/cards', cardRoute);
-router.use('*', (_req, res) => {
-  res.status(ERROR_CODE.not_found).json({
-    message: 'Запрашиваемая страница не найдена',
-  });
-});
+router.post('/signup', validCreateUser, createUser);
+router.post('/signin', validLogin, login);
+
+router.use('/users', auth, userRoute);
+router.use('/cards', auth, cardRoute);
+router.use('*', (req, res, next) => next(new NotFoundError('Страница не найдена')));
 
 module.exports = router;

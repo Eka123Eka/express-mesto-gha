@@ -1,25 +1,37 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const routes = require('./routes');
+const { errors } = require('celebrate');
+const handleError = require('./middlewares/handle-errors');
+const {
+  PORT, SERVER_ADR, DB_URL, timeInMs, limitQuery,
+} = require('./utils/constants');
 
-const { PORT = 3000, SERVER_ADR = 'http://127.0.0.1', DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+const routes = require('./routes');
 
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,
-}).then(() => console.log(new Date(), 'connected to db:', mongoose.connections[0].name));
+}).then(() => console.log(new Date(Date.now()).toString(), 'connected to db:', mongoose.connections[0].name));
 
 const app = express();
 
 app.use(helmet());
-app.use(express.json());
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64bff758ca97b24e917823c9',
-  };
-  next();
+
+const limiter = rateLimit({
+  windowMs: timeInMs,
+  max: limitQuery,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res, next, options) => res.status(options.statusCode).send(options.message),
 });
+
+app.use(limiter);
+app.use(express.json());
 app.use(routes);
+app.use(errors());
+app.use(handleError);
+
 app.listen(PORT, () => {
-  console.log(new Date(), `server is running at ${SERVER_ADR}:${PORT}`);
+  console.log(new Date(Date.now()).toString(), `server is running at ${SERVER_ADR}:${PORT}`);
 });

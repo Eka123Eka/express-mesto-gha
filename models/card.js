@@ -20,14 +20,14 @@ const cardSchema = new Schema({
   },
   owner: {
     type: Schema.Types.ObjectId,
-    reference: 'user',
+    ref: 'user',
     required: [true, 'Поле "owner" должно быть заполнено'],
   },
   likes: {
     type: [
       {
         type: Schema.Types.ObjectId,
-        reference: 'user',
+        ref: 'user',
       },
     ],
     default: [],
