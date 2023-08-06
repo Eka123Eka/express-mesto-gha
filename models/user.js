@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Поле "Email" должно быть заполнено'],
+    unique: true,
     validate: {
       validator: (v) => validator.isEmail(v),
       message: 'Некорректный Email',
