@@ -5,8 +5,7 @@ const handleError = (err, req, res, next) => {
     });
   } else {
     res.status(500).send({
-      message: `На сервере возникла непредвиденная ошибка. ${err.message}.
-      ${Object.values(err.errors).map((e) => e.message).join(', ')}`,
+      message: 'На сервере возникла непредвиденная ошибка.',
     });
   }
   next();

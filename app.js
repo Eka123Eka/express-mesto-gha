@@ -1,12 +1,12 @@
 const express = require('express');
-const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 const handleError = require('./middlewares/handle-errors');
 const {
-  PORT, SERVER_ADR, DB_URL, timeInMs, limitQuery,
+  PORT, SERVER_ADR, DB_URL,
 } = require('./utils/constants');
+const { limiter } = require('./utils/limiters');
 
 const routes = require('./routes');
 
@@ -17,14 +17,6 @@ mongoose.connect(DB_URL, {
 const app = express();
 
 app.use(helmet());
-
-const limiter = rateLimit({
-  windowMs: timeInMs,
-  max: limitQuery,
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res, next, options) => res.status(options.statusCode).send(options.message),
-});
 
 app.use(limiter);
 app.use(express.json());
