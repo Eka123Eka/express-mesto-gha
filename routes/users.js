@@ -13,7 +13,7 @@ const {
 
 router.get('/', getUsers);
 router.get('/:userId', validGetUserById, getUserById);
-router.get('/me', getLoginUser);
+router.get('/me', validGetUserById, getLoginUser);
 router.patch('/me', validUpdateUser, updateUser);
 router.patch('/me/avatar', validUpdateAvatar, updateAvatar);
 
