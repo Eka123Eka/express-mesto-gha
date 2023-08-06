@@ -28,74 +28,111 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
+  const owner = req.user._id;
   const { cardId } = req.params;
-
-  Card.findById(cardId)
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`);
-      } else if (card.owner.toString() !== req.user._id) {
+  Card.findByIdAndRemove(cardId)
+    .orFail(new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`))
+    .then((deletedCard) => {
+      if (deletedCard.owner.toString() !== owner) {
         throw new ForbiddenError(`Карточка с указанным id: ${cardId} размещена не вашим пользователем. Удаление невозможно.`);
-      } else {
-        Card.findByIdAndRemove(cardId)
-          .then((deletedCard) => res.send(deletedCard))
-          .catch(next);
       }
+      res.send(deletedCard);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(`Некорректный id карточки: ${cardId}`));
       } else { next(err); }
     });
+  // Card.findById(cardId)
+  //   .then((card) => {
+  //     if (!card) {
+  //       throw new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`);
+  //     } else if (card.owner.toString() !== req.user._id) {
+  //       throw new ForbiddenError(`Карточка с указанным id: ${cardId} размещена не вашим
+  //       пользователем. Удаление невозможно.`);
+  //     } else {
+  //       Card.findByIdAndRemove(cardId)
+  //         .then((deletedCard) => res.send(deletedCard))
+  //         .catch(next);
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     if (err.name === 'CastError') {
+  //       next(new BadRequestError(`Некорректный id карточки: ${cardId}`));
+  //     } else { next(err); }
+  //   });
 };
 
 const setLike = (req, res, next) => {
   const owner = req.user._id;
   const { cardId } = req.params;
-
-  Card.findById(cardId)
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`);
-      } else {
-        Card.findByIdAndUpdate(
-          cardId,
-          { $addToSet: { likes: owner } },
-          { new: true },
-        ).then((deletedCard) => res.send(deletedCard))
-          .catch(next);
-      }
-    })
+  Card.findByIdAndUpdate(
+    cardId,
+    { $addToSet: { likes: owner } },
+    { new: true },
+  )
+    .orFail(new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`))
+    .then((updateCard) => res.send(updateCard))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(`Переданы некорректные данные для установки лайка: ${cardId}`));
       } else { next(err); }
     });
+
+  // Card.findById(cardId)
+  //   .then((card) => {
+  //     if (!card) {
+  //       throw new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`);
+  //     } else {
+  //       Card.findByIdAndUpdate(
+  //         cardId,
+  //         { $addToSet: { likes: owner } },
+  //         { new: true },
+  //       ).then((deletedCard) => res.send(deletedCard))
+  //         .catch(next);
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     if (err.name === 'CastError') {
+  //       next(new BadRequestError(`Переданы некорректные данные для установки лайка: ${cardId}`));
+  //     } else { next(err); }
+  //   });
 };
 
 const unsetLike = (req, res, next) => {
   const owner = req.user._id;
   const { cardId } = req.params;
-
-  Card.findById(cardId)
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`);
-      } else {
-        Card.findByIdAndUpdate(
-          cardId,
-          { $pull: { likes: owner } },
-          { new: true },
-        )
-          .then((deletedCard) => res.send(deletedCard))
-          .catch(next);
-      }
-    })
+  Card.findByIdAndUpdate(
+    cardId,
+    { $pull: { likes: owner } },
+    { new: true },
+  )
+    .orFail(new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`))
+    .then((updateCard) => res.send(updateCard))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError(`Переданы некорректные данные для снятия лайка: ${cardId}`));
       } else { next(err); }
     });
+  // Card.findById(cardId)
+  //   .then((card) => {
+  //     if (!card) {
+  //       throw new NotFoundError(`Карточка с указанным id: ${cardId} не найдена`);
+  //     } else {
+  //       Card.findByIdAndUpdate(
+  //         cardId,
+  //         { $pull: { likes: owner } },
+  //         { new: true },
+  //       )
+  //         .then((deletedCard) => res.send(deletedCard))
+  //         .catch(next);
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     if (err.name === 'CastError') {
+  //       next(new BadRequestError(`Переданы некорректные данные для снятия лайка: ${cardId}`));
+  //     } else { next(err); }
+  //   });
 };
 
 module.exports = {
