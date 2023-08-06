@@ -5,14 +5,12 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const handleError = require('./middlewares/handle-errors');
 const {
-  // PORT, SERVER_ADR, DB_URL, timeInMs, limitQuery, требование 13го теста
-  PORT, SERVER_ADR, timeInMs, limitQuery,
+  PORT, SERVER_ADR, DB_URL, timeInMs, limitQuery,
 } = require('./utils/constants');
 
 const routes = require('./routes');
 
-// mongoose.connect(DB_URL, { требование 13го теста
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+mongoose.connect(DB_URL, {
   useNewUrlParser: true,
 }).then(() => console.log(new Date(Date.now()).toString(), 'connected to db:', mongoose.connections[0].name));
 
